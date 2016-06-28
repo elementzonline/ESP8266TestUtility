@@ -1,0 +1,25 @@
+<RCC>
+  <qresource prefix="Icons">
+    <file>Icons/upload.png</file>
+    <file>Icons/inbox-icon-46120.png</file>
+    <file>Icons/ycogyBK9i.png</file>
+    <file>Icons/Graphicloads-100-Flat-2-Outside.ico</file>
+    <file>Icons/wifi_Logo-128.png</file>
+    <file>Icons/Telegram (1).png</file>
+    <file>Icons/45420.png</file>
+    <file>Icons/connect-icon.png</file>
+    <file>Icons/Notepad.png</file>
+    <file>Icons/running_man.png</file>
+    <file>Icons/command-prompt-icon-1011.png</file>
+    <file>Icons/refresh.png</file>
+    <file>Icons/Custom-Icon-Design-Mono-General-3-Wifi.ico</file>
+    <file>Icons/connect.png</file>
+    <file>Icons/find.png</file>
+    <file>Icons/setting.png</file>
+    <file>Icons/clear.png</file>
+    <file>Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg</file>
+  </qresource>
+  <qresource prefix="background">
+    <file>Icons/background.jpg</file>
+  </qresource>
+</RCC>
