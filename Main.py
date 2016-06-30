@@ -29,13 +29,15 @@ port=''
 chat=''
 TCP_Msg_len =0
 POP_UP=''
-local_var = ''
+local_var_ip = ''
 server_Port_No=''
 connection_no_to_close=''
 chatbox_yesno=''
 co_number=''
 HTTP_Msg_len=''
 get_http_host=''
+get_directory = ''
+
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -94,8 +96,8 @@ class DialogClass(QtGui.QDialog, SMS_Bot.Ui_Dialog):
          co_number=local_var
 
     def Terminate_POP_UP(self):
-        global Flag
-        Flag =False
+        app.Server_Chat_checkBox.setChecked(False)
+        app.POP_up_checkBox.setChecked(False)
         self.close()
 
 
@@ -113,6 +115,8 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.server_chat)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.tabcolour)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.show_IP_address)
+        # QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.on_off)
+
 
         QtCore.QObject.connect(self.SendButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.send_script)
         QtCore.QObject.connect(self.ScriptLineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.ScriptText)
@@ -131,7 +135,6 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         QtCore.QObject.connect(self.PortLineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.Server_port)
         QtCore.QObject.connect(self.Connect_TCPUDP, QtCore.SIGNAL(_fromUtf8("clicked()")), self.Connection)
         QtCore.QObject.connect(self.Clear_pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.Clear_TCPUDP)
-
         QtCore.QObject.connect(self.Disconnect_TCPUDP, QtCore.SIGNAL(_fromUtf8("clicked()")), self.Termination)
         QtCore.QObject.connect(self.POP_up_checkBox, QtCore.SIGNAL(_fromUtf8("stateChanged(int)")), self.POPUP_CHAT)
         QtCore.QObject.connect(self.Server_pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.Connect_to_Client)
@@ -146,6 +149,8 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         QtCore.QObject.connect(self.http_lineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.get_host_name)
         QtCore.QObject.connect(self.http_close, QtCore.SIGNAL(_fromUtf8("clicked()")), self.terminate_http)
         QtCore.QObject.connect(self.http_getpushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.get_button)
+        QtCore.QObject.connect(self.http_Send_pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.HTTP_push_button)
+        QtCore.QObject.connect(self.lineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.http_get_directory)
 
 
     def port_update(self):
@@ -202,7 +207,7 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
     def serial_data(self):
         global Console_Data
         global read_serial
-        self.SerialConsole.setPlainText(">>"+Console_Data)
+        self.SerialConsole.setPlainText(Console_Data)
         with open('temp.txt', 'w') as FileHandle :
                 FileHandle.write(read_serial)
         self.SerialConsole.verticalScrollBar().setSliderPosition(self.SerialConsole.verticalScrollBar().maximum());
@@ -212,9 +217,13 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         ScriptData = data
 
     def send_script(self):
+      global portOpen
+      if portOpen:
         global ScriptData
         ESP_port.write(str(ScriptData) + "\r\n")
         self.ScriptLineEdit.setText('')
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def clear_log(self):
         global Console_Data
@@ -230,6 +239,7 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         global wifi_select
         global read_serial
         wifi_select=local
+
         if wifi_select == 'HOTSPOT+WIFI':
               self.Selection_pushButton.setText('HOTSPOT+WIFI MODE')
               ESP_port.write('AT+CWMODE_CUR=3'+ "\r\n")
@@ -247,10 +257,11 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
               ESP_port.write('AT+CWMODE_CUR=2'+ "\r\n")
 
 
-    def wifi_list(self):
-        global wifi_select
-        global Console_Data
 
+
+    def wifi_list(self):
+      global portOpen
+      if portOpen:
         global read_serial
         local_var2='Select\n'
         count=0
@@ -269,16 +280,22 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
             self.WifiCombobox.addItem("")
             self.WifiCombobox.setItemText(i, List[i])
         read_serial=''
-
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def wifi_ssid(self,local_var5):
         global SSID_Name
         SSID_Name=local_var5
 
     def ssid_pass(self,local_var6):
+        global wifi_select
         global ssid_password
 
         ssid_password=local_var6
+        if SSID_Name == 'Select' or ssid_password == '':
+            self.wifi_connect.setEnabled(False)
+        else:
+            self.wifi_connect.setEnabled(True)
 
 
     def yesno(self,yes):
@@ -289,9 +306,16 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
 
 
     def wifi_refresh(self):
-        ESP_port.write('AT+CWLAP' + "\r\n")
+
+        global portOpen
+        if portOpen:
+           ESP_port.write('AT+CWLAP' + "\r\n")
+        else:
+            self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def get_wifi(self):
+      global portOpen
+      if portOpen:
         global ssid_password
         global SSID_Name
         global check_b
@@ -300,19 +324,21 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
 
         else:
             ESP_port.write('AT+CWJAP_CUR="'+(str(SSID_Name)).strip()+'"'+','+'"'+str(ssid_password)+'"'+ "\r\n")
-
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def tabcolour(self):
         global Console_Data
+        global read_serial
         global co_number
         global POP_UP
         a1 = 0
         a2 = 0
         b1 = 0
-        a1 = Console_Data.rfind('CONNECT')
-        a2 = Console_Data.rfind('OK')
+        a1 = read_serial.rfind('CONNECT')
+        a2 = read_serial.rfind('OK')
         a1 = a1 + 11
-        b1 = Console_Data.rfind('CLOSED')
+        b1 = read_serial.rfind('CLOSED')
         a=0
         b=0
         a=Console_Data.rfind('WIFI DISCONNECT')
@@ -336,20 +362,23 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
                        app2.pushButton.setText('Server Status : Active')
                        app2.pushButton.setStyleSheet(_fromUtf8("background-color: rgb(0, 85, 0);"))
                        a1 = 0
+                       read_serial=''
                   elif b1 > a1:
                         app2.pushButton.setText('Server Status : Inactive')
                         app2.pushButton.setStyleSheet(_fromUtf8("background-color: rgb(170, 0, 0);"))
                         b1 = 0
+                        read_serial=''
             elif self.Server_Chat_checkBox.isChecked():
                 if a1 > b1 and a1 == a2:
                     app3.pushButton.setText('Client Status : Active')
                     app3.pushButton.setStyleSheet(_fromUtf8("background-color: rgb(0, 85, 0);"))
                     a1 = 0
+                    read_serial=''
                 elif b1 > a1:
                     app3.pushButton.setText('Client Status : Inactive')
                     app3.pushButton.setStyleSheet(_fromUtf8("background-color: rgb(170, 0, 0);"))
                     b1 = 0
-
+                    read_serial=''
 
     def default_wifi(self,Default):
         global check_b
@@ -357,7 +386,11 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         # ESP_port.write(' AT + CWAUTOCONN = 1' + "\r\n")
 
     def wifi_disconnect(self):
-         ESP_port.write('AT+CWQAP' + "\r\n")
+        global portOpen
+        if portOpen:
+           ESP_port.write('AT+CWQAP' + "\r\n")
+        else:
+            self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def tcp_udp(self,local_var11):
         global tcp_udp_selection
@@ -381,6 +414,8 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         port=local_var9
 
     def Connection(self):
+      global portOpen
+      if portOpen:
         global Server_add
         global port
         global tcp_udp_selection
@@ -388,15 +423,17 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
             ESP_port.write('AT+CIPSTART="TCP",'+'"'+str(Server_add)+'"'+','+str(port)+"\r\n")
         elif tcp_udp_selection == 'UDP':
             ESP_port.write('AT+CIPSTART="UDP",'+'"'+str(Server_add)+'"'+','+str(port)+"\r\n")
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
-             # local_var11=local_var10.split(':')
+          # local_var11=local_var10.split(':')
              # print local_var11
         # self.Client_PlaintextEdit.setPlainText(local_var11[1])
     #
     def server_chat(self):
 
                 global read_serial
-                global local_var
+                global local_var_ip
                 global POP_UP
                 global chatbox_yesno
                 # app2 = DialogClass()
@@ -406,16 +443,20 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
                 with open("temp.txt", "r") as f:
                     for line in f:
                         if line.startswith('+IPD'):
-                            local_var = line.split(':')
+                            local_var_ip = line.split(':')
                             if self.POP_up_checkBox.isChecked():
-                               app2.Server_PlaintextEdit.setPlainText(str(local_var[1]))
+                               app2.Server_PlaintextEdit.setPlainText(str(local_var_ip[1]))
+                               read_serial = ''
                             elif self.Server_Chat_checkBox.isChecked():
-                                app3.Server_PlaintextEdit.setPlainText(str(local_var[1]))
-                            read_serial = ''
+                                app3.Server_PlaintextEdit.setPlainText(str(local_var_ip[1]))
+                                read_serial = ''
+
 
 
 
     def POPUP_CHAT(self,showme_pop_up):
+      global portOpen
+      if portOpen:
         global POP_UP
         POP_UP=showme_pop_up
         if POP_UP:
@@ -423,19 +464,16 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
             app3.close()
             app2.show()
             app2.exec_()
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
-    # def Priority_Checked(self):
-    #     if self.POP_up_checkBox.isChecked():
-    #         app2.show()
-    #         self.POP_up_checkBox.setChecked(False)
-    #         app2.exec_()
-    #     elif self.Server_Chat_checkBox.isChecked():
-    #         app3.show()
-    #         self.Server_Chat_checkBox.setChecked(False)
-    #         app3.exec_()
 
     def Termination(self):
-         ESP_port.write('AT+CIPCLOSE'+"\r\n")
+        global portOpen
+        if portOpen:
+          ESP_port.write('AT+CIPCLOSE'+"\r\n")
+        else:
+            self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def Clear_TCPUDP(self):
         global Server_add
@@ -456,25 +494,39 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         connection_no_to_close=local2
 
     def Connect_to_Client(self):
+      global portOpen
+      if portOpen:
         global server_Port_No
         ESP_port.write('AT+CIPMUX=1' + "\r\n")
         time.sleep(1)
         ESP_port.write('AT+CIPSERVER=1,'+str(server_Port_No) + "\r\n")
         time.sleep(1)
         ESP_port.write('AT+CIFSR' + "\r\n")
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def show_IP_address(self):
         global read_serial
+        global local_var_ip
+        x1=0
+        x2=''
         with open('temp.txt', 'w') as FileHandle:
             FileHandle.write(read_serial)
 
         with open("temp.txt", "r") as f:
             for line in f:
                 if line.startswith('+CIFSR:'):
-                    local_var = line.split(',')
-                    self.Server_IPlineEdit.setText(str(local_var[1]).strip('"'))
+                    local_var_ip = line.split(',')
+                    self.Server_IPlineEdit.setText(str(local_var_ip[1]))
                     read_serial = ''
                     break
+                if line.startswith('Content-Type:'):
+                     x1=read_serial.rfind('Content-Type:')
+                     x2=x1+27
+                     # x2=read_serial.rfind('Ramakanta')
+                     if x1>0:
+                          self.HTTPplainTextEdit.setPlainText(read_serial[x1+27:-8].replace('<br/>','\n'))
+                          read_serial=''
 
     def Clear_Server_Data(self):
         global connection_no_to_close
@@ -485,6 +537,8 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         self.Server_PortlineEdit.setText('')
 
     def server_chat_open(self,yes):
+      global portOpen
+      if portOpen:
         global chatbox_yesno
         chatbox_yesno=yes
         if chatbox_yesno:
@@ -493,50 +547,99 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
             # self.Server_Chat_checkBox.setChecked(False)
             app3.show()
             app3.exec_()
-
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def Close_server(self):
-        global connection_no_to_close
-        ESP_port.write('AT+CIPCLOSE='+str(connection_no_to_close) + "\r\n")
+        global portOpen
+        if portOpen:
+           global connection_no_to_close
+           ESP_port.write('AT+CIPCLOSE='+str(connection_no_to_close) + "\r\n")
+        else:
+            self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
 
     def Configure_http(self):
+      global portOpen
+      if portOpen:
         global read_serial
         global get_http_host
-        ESP_port.write('AT+CIPSTART="TCP",'+'"'+str(get_http_host)+'",80' + "\r\n")
-
+        ESP_port.write('AT+CIPSTART="TCP",'+'"'+str(str(get_http_host).strip('http://')).rstrip('/')+'",80' + "\r\n")
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def COUNT_http_msg_len(self):
-        global HTTP_Msg_len
-        HTTP_Msg_len = len(self.HTTPplainTextEdit.toPlainText())
+         global HTTP_Msg_len
+         HTTP_Msg_len = len(self.HTTPplainTextEdit.toPlainText())
 
     def get_host_name(self,local):
         global get_http_host
         get_http_host=local
+    def http_get_directory(self,locall):
+        global get_directory
+        get_directory = locall
 
     def get_button(self):
-        global HTTP_Msg_len
+      global portOpen
+      if portOpen:
+        a = 0
+        b = 0
+        c = 0
+        # global HTTP_Msg_len
         global get_http_host
+        get_http_host = str(str(get_http_host).strip('http://')).rstrip('/')
+        global get_directory
+        c=len(get_directory)
+        a=len(get_http_host)
+        b=a+c+26
+        ESP_port.write('AT+CIPSEND=' + str(b) + "\r\n")
+        time.sleep(1)
+        ESP_port.write('GET /'+str(get_directory)+' HTTP/1.1\r\nHost: '+str(get_http_host)+'\r\n\r\n')
+        time.sleep(10)
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
+
+
+    def HTTP_push_button(self):
+      global portOpen
+      if portOpen:
+        global HTTP_Msg_len
+        global get_directory
+        global get_http_host
+        get_http_host = str(str(get_http_host).strip('http://')).rstrip('/')
         a=0
         b=0
-        a=len(get_http_host)
-        b=a+HTTP_Msg_len+34
-        ESP_port.write('AT+CIPSEND=' + str(HTTP_Msg_len) + "\r\n")
+        c=0
+        d=0
+        c = len(get_directory)
+        a = len(get_http_host)
+        # d = len(HTTP_Msg_len)
+        # HTTP_Msg_len = len(self.HTTPplainTextEdit.toPlainText())
+        # d = len(HTTP_Msg_len)
+        b=c+a+2+HTTP_Msg_len+94
+        print str(HTTP_Msg_len)
+        ESP_port.write('AT+CIPSEND=' + str(b) + "\r\n")
         time.sleep(1)
-        ESP_port.write(str(self.HTTPplainTextEdit.toPlainText()))
-        # time.sleep(1)
-        # ESP_port.write('AT+CIPCLOSE=0'+ "\r\n")
+        ESP_port.write('POST /'+str(get_directory)+' HTTP/1.1\r\nHost: '+str(get_http_host)+'\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: '+str(HTTP_Msg_len)+'\r\n\r\n'+str(self.HTTPplainTextEdit.toPlainText())+'\r\n\r\n')
+        time.sleep(10)
+      else:
+          self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def terminate_http(self):
-        ESP_port.write('AT+CIPCLOSE=0'+ "\r\n")
-        time.sleep(1)
-        ESP_port.write('AT+RST'+ "\r\n")
+       global portOpen
+       if portOpen:
+         ESP_port.write('AT+CIPCLOSE=0'+ "\r\n")
+         time.sleep(1)
+         ESP_port.write('AT+RST'+ "\r\n")
+       else:
+           self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
     def http_clear(self):
         global get_http_host
         get_http_host=''
         self.http_lineEdit.setText('')
         self.HTTPplainTextEdit.setPlainText('')
+        self.lineEdit.setText('')
 
 
 class WorkThread(QtCore.QThread):
