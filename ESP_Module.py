@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ESP_Module.ui'
 #
-# Created: Thu Jun 30 13:41:19 2016
-#      by: PyQt4 UI code generator 4.11.3
+# Created: Thu Jun 30 17:46:57 2016
+#      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -262,7 +262,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 698, 410))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 605, 410))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_10 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_10.setObjectName(_fromUtf8("gridLayout_10"))
@@ -413,7 +413,7 @@ class Ui_MainWindow(object):
         self.toolBox.setFrameShadow(QtGui.QFrame.Plain)
         self.toolBox.setObjectName(_fromUtf8("toolBox"))
         self.page_3 = QtGui.QWidget()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 717, 282))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 89, 89))
         self.page_3.setObjectName(_fromUtf8("page_3"))
         self.gridLayout_5 = QtGui.QGridLayout(self.page_3)
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
@@ -421,7 +421,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -176, 680, 438))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 680, 438))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_11 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_11.setObjectName(_fromUtf8("gridLayout_11"))
@@ -488,7 +488,7 @@ class Ui_MainWindow(object):
         self.Disconnect_TCPUDP.setIcon(icon9)
         self.Disconnect_TCPUDP.setIconSize(QtCore.QSize(32, 32))
         self.Disconnect_TCPUDP.setObjectName(_fromUtf8("Disconnect_TCPUDP"))
-        self.gridLayout_11.addWidget(self.Disconnect_TCPUDP, 13, 1, 1, 1, QtCore.Qt.AlignRight)
+        self.gridLayout_11.addWidget(self.Disconnect_TCPUDP, 13, 1, 1, 1)
         self.SelectionCombobox = QtGui.QComboBox(self.scrollAreaWidgetContents)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -522,7 +522,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addWidget(self.scrollArea, 0, 0, 1, 1)
         self.toolBox.addItem(self.page_3, _fromUtf8(""))
         self.page_4 = QtGui.QWidget()
-        self.page_4.setGeometry(QtCore.QRect(0, 0, 717, 264))
+        self.page_4.setGeometry(QtCore.QRect(0, 0, 655, 258))
         self.page_4.setObjectName(_fromUtf8("page_4"))
         self.gridLayout_6 = QtGui.QGridLayout(self.page_4)
         self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
@@ -539,7 +539,7 @@ class Ui_MainWindow(object):
         self.label_7.setStyleSheet(_fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
 "border-color: rgba(255, 255, 255, 0);"))
         self.label_7.setObjectName(_fromUtf8("label_7"))
-        self.gridLayout_6.addWidget(self.label_7, 1, 1, 1, 1, QtCore.Qt.AlignRight)
+        self.gridLayout_6.addWidget(self.label_7, 1, 1, 1, 1)
         self.Connection_lineEdit = QtGui.QLineEdit(self.page_4)
         self.Connection_lineEdit.setObjectName(_fromUtf8("Connection_lineEdit"))
         self.gridLayout_6.addWidget(self.Connection_lineEdit, 1, 2, 1, 1)
@@ -600,7 +600,7 @@ class Ui_MainWindow(object):
         self.label_9.setStyleSheet(_fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
 "border-color: rgba(255, 255, 255, 0);"))
         self.label_9.setObjectName(_fromUtf8("label_9"))
-        self.gridLayout_6.addWidget(self.label_9, 0, 0, 1, 3, QtCore.Qt.AlignRight)
+        self.gridLayout_6.addWidget(self.label_9, 0, 0, 1, 3)
         self.toolBox.addItem(self.page_4, _fromUtf8(""))
         self.gridLayout_3.addWidget(self.toolBox, 0, 1, 1, 1)
         self.CloseServer.addTab(self.TCPUDP_tab, _fromUtf8(""))
@@ -614,7 +614,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents_3 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, -234, 735, 533))
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 735, 533))
         self.scrollAreaWidgetContents_3.setObjectName(_fromUtf8("scrollAreaWidgetContents_3"))
         self.gridLayout_12 = QtGui.QGridLayout(self.scrollAreaWidgetContents_3)
         self.gridLayout_12.setObjectName(_fromUtf8("gridLayout_12"))
@@ -672,7 +672,7 @@ class Ui_MainWindow(object):
         self.http_close.setIcon(icon13)
         self.http_close.setIconSize(QtCore.QSize(32, 32))
         self.http_close.setObjectName(_fromUtf8("http_close"))
-        self.gridLayout_12.addWidget(self.http_close, 1, 4, 1, 1, QtCore.Qt.AlignRight)
+        self.gridLayout_12.addWidget(self.http_close, 1, 4, 1, 1)
         self.http_lineEdit = QtGui.QLineEdit(self.scrollAreaWidgetContents_3)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -765,7 +765,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.CloseServer.setCurrentIndex(4)
+        self.CloseServer.setCurrentIndex(0)
         self.toolBox.setCurrentIndex(1)
         self.toolBox.layout().setSpacing(6)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
