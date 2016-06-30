@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ESP_Module.ui'
 #
-# Created: Thu Jun 30 17:46:57 2016
+# Created: Thu Jun 30 18:07:59 2016
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,7 +35,7 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Icons/Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet(_fromUtf8("QMainWindow{background-image: url(:/background/Icons/background.jpg);background-repeat: repeat;}\n"
+        MainWindow.setStyleSheet(_fromUtf8("QMainWindow{background-image: url(:/background/Icons/background.png);background-repeat: repeat;}\n"
 "\n"
 "QToolBar{background:blue;}\n"
 "\n"
@@ -262,7 +262,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 605, 410))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 698, 410))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_10 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_10.setObjectName(_fromUtf8("gridLayout_10"))
@@ -421,7 +421,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 680, 438))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 649, 438))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_11 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_11.setObjectName(_fromUtf8("gridLayout_11"))
@@ -522,7 +522,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addWidget(self.scrollArea, 0, 0, 1, 1)
         self.toolBox.addItem(self.page_3, _fromUtf8(""))
         self.page_4 = QtGui.QWidget()
-        self.page_4.setGeometry(QtCore.QRect(0, 0, 655, 258))
+        self.page_4.setGeometry(QtCore.QRect(0, 0, 717, 264))
         self.page_4.setObjectName(_fromUtf8("page_4"))
         self.gridLayout_6 = QtGui.QGridLayout(self.page_4)
         self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
