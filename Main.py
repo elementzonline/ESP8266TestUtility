@@ -9,6 +9,7 @@ import serial.tools.list_ports
 import time
 import re
 
+com_port_selection = ''
 c=''
 send_flag = 0
 baud_rate = 115200
@@ -115,9 +116,6 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.server_chat)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.tabcolour)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.show_IP_address)
-        # QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.on_off)
-
-
         QtCore.QObject.connect(self.SendButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.send_script)
         QtCore.QObject.connect(self.ScriptLineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.ScriptText)
         QtCore.QObject.connect(self.wifi_pass, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.ssid_pass)
@@ -156,21 +154,29 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
     def port_update(self):
         try:
             self.portComboBox.clear()
+            initial = 'Select'
             ports = list(serial.tools.list_ports.comports())
+            ports = [initial]+ports
             num_port = len(ports)
             for i in range(num_port):
                 self.portComboBox.addItem("")
-                # for i in range(num_port):
-                self.portComboBox.setItemText(i, ports[i][0])
-            self.port_select(ports[0][0])
-        except:
-            self.SerialConsole.setPlainText('Port Not Found')
+                if i == 0:
+                    self.portComboBox.setItemText(i, ports[i])
+                else:
+                     self.portComboBox.setItemText(i, ports[i][0])
 
-    def port_select(self, port):
+
+        except:
+             self.SerialConsole.setPlainText('Port Not Found')
+
+    def port_select(self,local_var):
+        global com_port_selection
         ESP_port.close
         global portOpen
         portOpen = False
-        ESP_port.port = port
+        com_port_selection =local_var
+        # print type(com_port_selection)
+
 
     def baud_select(self, baud):
         ESP_port.close
@@ -179,30 +185,33 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         ESP_port.baudrate = baud
 
     def connect_disconnect(self):
-        global Console_Data
-
-        try:
+         global Console_Data
+         global com_port_selection
+         try:
 
             global portOpen
             if (portOpen):
-
                 ESP_port.close()
                 portOpen = False
                 self.connectButton.setText("Connect")
                 Console_Data = 'Port Closed'
                 self.SerialConsole.setPlainText(str(Console_Data))
+                self.findButton.setEnabled(True)
+                self.portComboBox.setEnabled(True)
             else:
 
+                ESP_port.port = str(com_port_selection)
                 ESP_port.open()
                 portOpen = True
                 self.connectButton.setText("Disconnect")
                 Console_Data = 'Port Opened'
                 ESP_port.write("AT" + "\r\n")
                 self.SerialConsole.setPlainText(str(Console_Data))
+                self.findButton.setEnabled(False)
+                self.portComboBox.setEnabled(False)
 
-
-        except:
-            self.SerialConsole.setPlainText('Port May be Used By Another Application')
+         except:
+             self.SerialConsole.setPlainText('Port May be Used By Another Application')
 
     def serial_data(self):
         global Console_Data
@@ -264,21 +273,19 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
       if portOpen:
         global read_serial
         local_var2='Select\n'
-        count=0
         with open("temp.txt","r") as f:
-
             for line in f:
                 if line.startswith('+CWLAP:('):
-                    local_var=(re.search(r'"(.*?)"', line).group(1))
+                    local_var=re.search(r'"(.*?)"', line).group(1)
                     local_var2+=(local_var+"\n")
         with open('temp.txt', 'w') as logtext :
            logtext.write(local_var2)
         List = open("temp.txt").readlines()
-        local_var1=len(List)
-        # List=List.rstrip()
-        for i in range(local_var1):
-            self.WifiCombobox.addItem("")
-            self.WifiCombobox.setItemText(i, List[i])
+        List[:] = [k[:-1] for k in List]
+        self.WifiCombobox.clear()
+        for i in range(len(List)):
+               self.WifiCombobox.addItem("")
+               self.WifiCombobox.setItemText(i, List[i])
         read_serial=''
       else:
           self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
@@ -292,11 +299,6 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
         global ssid_password
 
         ssid_password=local_var6
-        if SSID_Name == 'Select' or ssid_password == '':
-            self.wifi_connect.setEnabled(False)
-        else:
-            self.wifi_connect.setEnabled(True)
-
 
     def yesno(self,yes):
         if yes:
@@ -309,7 +311,7 @@ class MainGUIClass(QtGui.QMainWindow, ESP_Module.Ui_MainWindow):
 
         global portOpen
         if portOpen:
-           ESP_port.write('AT+CWLAP' + "\r\n")
+            ESP_port.write('AT+CWLAP' + "\r\n")
         else:
             self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 

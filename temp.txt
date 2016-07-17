@@ -1,29 +1,0 @@
-0,CLOSED
-AT+CWLAP
-+CWLAP:(4,"Elementz_BSNL",-42,"c8:d3:a3:c8:df:30",1,-9)
-+CWLAP:(4,"HP-Print-E1-LaserJet Pro MFP",-53,"c4:8e:8f:84:b0:e1",1,-41)
-+CWLAP:(0,"hi2",-65,"1a:fe:34:9e:0b:bf",1,-102)
-+CWLAP:(4,"Elementz_Asianet",-78,"20:25:64:4e:be:b3",6,-36)
-+CWLAP:(4,"Athens",-86,"48:ee:0c:da:8e:d5",10,-24)
-
-OK
-AT+CWJAP_CUR="","4712300804"
-
-ERROR
-AT+CWJAP_CUR="Elementz_BSNL","4712300804"
-WIFI DISCONNECT
-WIFI CONNECTED
-WIFI GOT IP
-
-OK
-AT+CWMODE_CUR=3
-
-OK
-AT+CWLAP
-+CWLAP:(4,"Elementz_BSNL",-50,"c8:d3:a3:c8:df:30",1,48)
-+CWLAP:(3,"MBLAZE-AC3633R2-4B5D",-89,"18:68:6a:19:4b:5d",1,30)
-+CWLAP:(4,"HP-Print-E1-LaserJet Pro MFP",-47,"c4:8e:8f:84:b0:e1",1,18)
-+CWLAP:(0,"hi2",-67,"1a:fe:34:9e:0b:bf",1,-46)
-+CWLAP:(4,"Elementz_Asianet",-76,"20:25:64:4e:be:b3",6,21)
-
-OK
